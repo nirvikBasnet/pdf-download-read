@@ -16,11 +16,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
+import java.net.URLDecoder
 
 
 @Composable
-fun LoadURLScreen(){
-    MainContent("https://www.geeksforgeeks.org")
+fun LoadURLScreen(navController: NavController, url: String?){
+    url?.let {
+        val decodedUrl = URLDecoder.decode(url)
+        MainContent(decodedUrl)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

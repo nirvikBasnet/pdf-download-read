@@ -15,20 +15,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(){
-    var url = remember { mutableStateOf("") }
+fun HomeScreen(navController: NavController){
+    val url = remember { mutableStateOf("") }
+
+    //need to encode because url contains :// which will throw an exception
+    val encodedUrl = URLEncoder.encode(url.value,"utf-8")
 
     Column (modifier = Modifier.padding(5.dp)
         .fillMaxWidth().fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
 
-        OutlinedTextField(modifier = Modifier.fillMaxWidth(), value = "", onValueChange = {url.value=it}, label = {
+        OutlinedTextField(modifier = Modifier.fillMaxWidth(), value = url.value, onValueChange = {url.value=it}, label = {
             Text("URL")
         })
-        Button(modifier = Modifier.fillMaxWidth(), onClick = {}){
+        Button(modifier = Modifier.fillMaxWidth(), onClick = {navController.navigate("LoadURLScreen/$encodedUrl")}){
             Text("View")
         }
         Button(modifier = Modifier.fillMaxWidth(),onClick = {}){
