@@ -1,5 +1,6 @@
 package com.nirvikbasnet.pdfreader.ui.screen
 
+import android.app.DownloadManager
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -32,34 +33,18 @@ fun LoadURLScreen(navController: NavController, url: String?){
 @Composable
 fun MainContent(url: String) {
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "PDF Reader",
-                        color = Color.White,
-                        fontSize = 20.sp
-
-                    )
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Blue)
-            )
-        }) { MyContent(paddingValues = it,url) }
+     MyContent( url)
 
 }
 
 
 @Composable
-fun MyContent(paddingValues: PaddingValues, url: String) {
+fun MyContent(url: String) {
 
     // Declare a string that contains a url
     val mUrl = url
 
-    // Adding a WebView inside AndroidView
-    // with layout as full screen
     AndroidView(
-        modifier = Modifier.padding(paddingValues),
         factory = {
             WebView(it).apply {
                 layoutParams = ViewGroup.LayoutParams(
