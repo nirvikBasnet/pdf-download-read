@@ -1,6 +1,7 @@
 package com.nirvikbasnet.pdfreader.ui.screen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,14 +25,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nirvikbasnet.pdfreader.data.PreferencesManager
 import com.nirvikbasnet.pdfreader.ui.navigation.bottomNavigation.BottomNavBar
 import com.nirvikbasnet.pdfreader.ui.screen.viewModel.DownloadPdfViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DownloadScreen(navController: NavController, viewModel: DownloadPdfViewModel){
+fun DownloadScreen(context: Context, navController: NavController, viewModel: DownloadPdfViewModel){
     val url = remember { mutableStateOf("") }
+    val preferencesManager = remember { PreferencesManager(context) }
+    val data = remember { mutableStateOf(preferencesManager.getData("dir", "")) }
+
 
     var selectedDirectoryUri by remember { mutableStateOf<Uri?>(null) }
     var context = LocalContext.current
@@ -41,15 +46,14 @@ fun DownloadScreen(navController: NavController, viewModel: DownloadPdfViewModel
         contract = ActivityResultContracts.OpenDocumentTree()
     ) { uri ->
         selectedDirectoryUri = uri
+        data.value = uri.toString()
+        preferencesManager.saveData("dir", uri.toString())
+
     }
+//TODO, for testing i've removed the below
+   // val isDownloadEnabled = selectedDirectoryUri != null
 
-    val isDownloadEnabled = selectedDirectoryUri != null
-
-    Scaffold(
-        bottomBar = {
-            BottomNavBar(navController)
-        }
-    ) {
+    Scaffold {
         Column (modifier = Modifier.padding(5.dp)
             .fillMaxWidth().fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center) {
@@ -64,7 +68,7 @@ fun DownloadScreen(navController: NavController, viewModel: DownloadPdfViewModel
 
             Button(modifier = Modifier.fillMaxWidth(),
                 onClick = {  viewModel.downloadPdf(context, url.value, "ABC", selectedDirectoryUri)},
-                enabled = isDownloadEnabled
+//                enabled = isDownloadEnabled
                 ){
                 Text("Download")
             }
